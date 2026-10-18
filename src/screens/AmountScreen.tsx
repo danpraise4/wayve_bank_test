@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { router } from 'expo-router';
+import { openScreen } from '../navigation/openScreen';
 import { Text, StyleSheet } from 'react-native';
 import { KeyboardScreen } from '../components/KeyboardScreen';
 import { TransferQuote } from '../components/TransferQuote';
@@ -65,7 +65,7 @@ export function AmountScreen() {
       <Button
         label="Review transfer"
         disabled={quote.totalDebitMinor === null || Boolean(quote.error) || Boolean(narrationError)}
-        onPress={() => router.push('/transfer/review')}
+        onPress={() => openScreen('/transfer/review')}
       />
     </KeyboardScreen>
   );

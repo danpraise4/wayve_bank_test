@@ -129,7 +129,7 @@ export function HistoryScreen() {
             <DateField label="To" value={toInput} onChangeText={changeTo} />
           </View>
           {dateError ? <Banner message={dateError} /> : null}
-          {view.mode === 'refresh-error' ? <Banner message={`${customerMessage('NETWORK')} Showing the transactions already loaded.`} /> : null}
+          {view.mode === 'refresh-error' ? <Banner message="We couldn't refresh. The transactions already loaded are still shown." /> : null}
         </View>
       }
       ListEmptyComponent={

@@ -64,6 +64,13 @@ That runs three suites:
 
 Screenshots of the web build are in [docs/screenshots](docs/screenshots).
 
+## Known limitations
+
+- The mock stores idempotency keys in one process. A restart of the API forgets them. That is not a production financial guarantee.
+- The session is a fixed demo token. There is no login, refresh token, or device binding.
+- Assessment tools send `X-Wayve-Scenario`. A customer build would not expose that control.
+- Screen-reader passes, a real OS process kill, and Android hardware-back automation are documented as manual in [docs/TESTING.md](docs/TESTING.md). Restart is covered by restoring the saved transfer intent.
+
 ## Documents
 
 - [Architecture](docs/ARCHITECTURE.md)

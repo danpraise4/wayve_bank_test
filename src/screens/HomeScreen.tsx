@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import * as Clipboard from 'expo-clipboard';
-import { useNetworkState } from 'expo-network';
 import { useEffect, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { TransactionRow } from '../components/TransactionRow';
@@ -25,7 +24,6 @@ const refreshOnce = singleFlight(() =>
 
 export function HomeScreen() {
   const expired = useSession((state) => state.expired);
-  const network = useNetworkState();
   const balanceHidden = usePrivacy((state) => state.balanceHidden);
   const toggleBalance = usePrivacy((state) => state.toggleBalance);
   const [privacyReady, setPrivacyReady] = useState(usePrivacy.persist.hasHydrated());
@@ -59,7 +57,6 @@ export function HomeScreen() {
     isError: recent.isError,
     isEmpty: (items) => items.length === 0,
   });
-  const offline = network.isConnected === false || network.isInternetReachable === false;
   const refreshFailed = accountView.mode === 'refresh-error' || recentView.mode === 'refresh-error';
 
   async function copyAccountNumber() {
@@ -90,7 +87,6 @@ export function HomeScreen() {
         <Text style={styles.greeting} maxFontSizeMultiplier={1.6}>
           {account.data ? greetingForDate(new Date(), firstNameFrom(account.data.accountName)) : 'Welcome'}
         </Text>
-        {offline ? <Banner tone="info" message="You're offline. Saved details stay on screen, and new requests will wait." /> : null}
         {refreshFailed ? <Banner message={`${customerMessage('UPSTREAM_FAILURE')} Your last balances and transactions are still shown.`} /> : null}
         {notice ? <Banner tone="info" message={notice} /> : null}
         {intent && isUnresolvedPhase(intent.phase) ? (

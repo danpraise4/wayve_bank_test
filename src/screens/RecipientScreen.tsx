@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { router } from 'expo-router';
+import { openScreen } from '../navigation/openScreen';
 import { useEffect, useRef, useState } from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { KeyboardScreen } from '../components/KeyboardScreen';
@@ -98,7 +98,7 @@ export function RecipientScreen() {
       {resolving ? <Banner tone="info" message="Checking the account name…" /> : null}
       {enquiryError ? <Banner message={enquiryError} /> : null}
       {accountName ? <Banner tone="info" message={`Account name: ${accountName}`} /> : null}
-      <Button label="Continue" disabled={!accountName || Boolean(accountError)} onPress={() => router.push('/transfer/amount')} />
+      <Button label="Continue" disabled={!accountName || Boolean(accountError)} onPress={() => openScreen('/transfer/amount')} />
       <Modal visible={pickerOpen} animationType="slide" onRequestClose={() => setPickerOpen(false)}>
         <View style={styles.modal}>
           <Text accessibilityRole="header" style={styles.title}>
