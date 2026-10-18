@@ -1,12 +1,13 @@
 export const colors = {
   blue: '#0A3D7A',
-  blueBright: '#1565C0',
-  blueSoft: '#E7F0FA',
+  blueDeep: '#06284F',
+  blueBright: '#1B6FD4',
+  blueSoft: '#E8F1FB',
   white: '#FFFFFF',
-  background: '#F4F7FB',
-  text: '#102033',
-  muted: '#3E4C59',
-  border: '#D3DDE8',
+  background: '#F3F6FB',
+  text: '#0E1B2E',
+  muted: '#44566A',
+  border: '#E3EAF2',
   success: '#0D6B38',
   successBg: '#E5F6EC',
   pending: '#8A5A00',
@@ -27,10 +28,27 @@ export const space = {
 } as const;
 
 export const type = {
-  hero: 32,
-  title: 22,
+  hero: 34,
+  title: 26,
   section: 18,
   body: 16,
   label: 14,
   caption: 12,
+} as const;
+
+export const radius = {
+  sm: 12,
+  md: 18,
+  lg: 28,
+  pill: 999,
+} as const;
+
+export const shadow = {
+  card: {
+    shadowColor: '#0A2540',
+    shadowOpacity: 0.08,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 3,
+  },
 } as const;

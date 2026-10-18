@@ -2,14 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import { openScreen } from '../navigation/openScreen';
 import { useEffect, useRef, useState } from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AppIcon } from '../components/AppIcon';
 import { KeyboardScreen } from '../components/KeyboardScreen';
-import { Banner, Button, TextField } from '../components/ui';
+import { Banner, Button, ScreenIntro, TextField } from '../components/ui';
 import { ApiError } from '../domain/errors';
 import { createLatestQuery } from '../domain/staleRequest';
 import { validateAccountNumber, validateBankCode } from '../domain/validation';
 import { bankApi, useSession } from '../state/runtime';
 import { useTransferDraft } from '../state/transferDraftStore';
-import { colors, space, type as typeScale } from '../theme/tokens';
+import { colors, radius, shadow, space, type as typeScale } from '../theme/tokens';
 
 export function RecipientScreen() {
   const expired = useSession((state) => state.expired);
@@ -72,18 +73,19 @@ export function RecipientScreen() {
 
   return (
     <KeyboardScreen>
-      <Text style={styles.step}>Step 1 of 3</Text>
-      <Text accessibilityRole="header" style={styles.title}>
-        Who are you paying?
-      </Text>
+      <ScreenIntro eyebrow="Step 1 of 3" title="Who are you paying?" />
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={bankName ? `Selected bank ${bankName}. Change bank` : 'Select a bank'}
         onPress={() => setPickerOpen(true)}
         style={styles.bank}
       >
-        <Text style={styles.bankLabel}>Bank</Text>
-        <Text style={styles.bankValue}>{bankName || 'Select a bank'}</Text>
+        <AppIcon name="bank" size={20} color={colors.blue} wellColor={colors.blueSoft} />
+        <View style={styles.bankCopy}>
+          <Text style={styles.bankLabel}>Bank</Text>
+          <Text style={styles.bankValue}>{bankName || 'Select a bank'}</Text>
+        </View>
+        <AppIcon name="chevron" size={18} color={colors.muted} />
       </Pressable>
       <TextField
         label="Account number"
@@ -97,13 +99,21 @@ export function RecipientScreen() {
       />
       {resolving ? <Banner tone="info" message="Checking the account name…" /> : null}
       {enquiryError ? <Banner message={enquiryError} /> : null}
-      {accountName ? <Banner tone="info" message={`Account name: ${accountName}`} /> : null}
+      {accountName ? (
+        <View style={styles.confirmed} accessibilityLabel={`Account name: ${accountName}`}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{initials(accountName)}</Text>
+          </View>
+          <View style={styles.confirmedCopy}>
+            <Text style={styles.confirmedLabel}>Account name</Text>
+            <Text style={styles.confirmedName}>{accountName}</Text>
+          </View>
+        </View>
+      ) : null}
       <Button label="Continue" disabled={!accountName || Boolean(accountError)} onPress={() => openScreen('/transfer/amount')} />
       <Modal visible={pickerOpen} animationType="slide" onRequestClose={() => setPickerOpen(false)}>
         <View style={styles.modal}>
-          <Text accessibilityRole="header" style={styles.title}>
-            Select a bank
-          </Text>
+          <ScreenIntro eyebrow="Transfer" title="Select a bank" />
           <FlatList
             data={banks.data ?? []}
             keyExtractor={(item) => item.code}
@@ -130,20 +140,43 @@ export function RecipientScreen() {
   );
 }
 
+function initials(name: string) {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? '')
+    .join('');
+}
+
 const styles = StyleSheet.create({
-  step: { color: colors.blue, fontWeight: '700' },
-  title: { color: colors.text, fontSize: typeScale.title, fontWeight: '800' },
   bank: {
-    minHeight: 64,
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: colors.border,
+    minHeight: 72,
+    borderRadius: radius.lg,
     backgroundColor: colors.white,
-    padding: space.md,
-    justifyContent: 'center',
+    paddingHorizontal: space.md,
+    paddingVertical: space.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    ...shadow.card,
   },
-  bankLabel: { color: colors.muted, fontSize: typeScale.caption },
-  bankValue: { color: colors.text, fontSize: typeScale.body, fontWeight: '700' },
+  bankCopy: { flex: 1 },
+  bankLabel: { color: colors.muted, fontSize: typeScale.caption, fontWeight: '700' },
+  bankValue: { color: colors.text, fontSize: typeScale.body, fontWeight: '800', marginTop: 2 },
+  confirmed: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.white, borderRadius: radius.lg, padding: space.md, ...shadow.card },
+  avatar: { width: 48, height: 48, borderRadius: radius.pill, backgroundColor: colors.blue, alignItems: 'center', justifyContent: 'center' },
+  avatarText: { color: colors.white, fontWeight: '800' },
+  confirmedCopy: { flex: 1, gap: 2 },
+  confirmedLabel: { color: colors.muted, fontSize: typeScale.caption, fontWeight: '700' },
+  confirmedName: { color: colors.text, fontSize: typeScale.section, fontWeight: '800' },
   modal: { flex: 1, backgroundColor: colors.background, padding: space.lg, gap: space.md },
-  bankRow: { minHeight: 56, justifyContent: 'center', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+  bankRow: {
+    minHeight: 64,
+    justifyContent: 'center',
+    backgroundColor: colors.white,
+    borderRadius: radius.md,
+    paddingHorizontal: space.md,
+    marginBottom: space.sm,
+  },
 });

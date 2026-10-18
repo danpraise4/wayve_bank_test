@@ -35,9 +35,9 @@ export default function RootLayout() {
             <OfflineBanner />
             <Stack
               screenOptions={{
-                headerStyle: { backgroundColor: colors.white },
+                headerStyle: { backgroundColor: colors.background },
                 headerTintColor: colors.blue,
-                headerTitleStyle: { fontWeight: '700' },
+                headerTitleStyle: { fontWeight: '800', fontSize: 17 },
                 headerShadowVisible: false,
                 contentStyle: { backgroundColor: colors.background },
                 animation: 'slide_from_right',

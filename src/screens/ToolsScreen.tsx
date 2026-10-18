@@ -1,6 +1,7 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { AppIcon } from '../components/AppIcon';
 import { useScenario } from '../state/runtime';
-import { colors, space, type as typeScale } from '../theme/tokens';
+import { colors, radius, shadow, space, type as typeScale } from '../theme/tokens';
 
 const SCENARIOS: readonly { id: string | null; label: string; detail: string }[] = [
   { id: null, label: 'Normal', detail: 'Successful transfers and ordinary responses.' },
@@ -41,7 +42,7 @@ export function ToolsScreen() {
               <Text style={styles.label}>{item.label}</Text>
               <Text style={styles.detail}>{item.detail}</Text>
             </View>
-            <Text style={styles.mark}>{selected ? 'On' : ''}</Text>
+            {selected ? <AppIcon name="check" size={18} color={colors.blue} /> : <View style={styles.mark} />}
           </Pressable>
         );
       })}
@@ -53,19 +54,18 @@ const styles = StyleSheet.create({
   content: { padding: space.lg, gap: space.sm, paddingBottom: space.xxl },
   intro: { color: colors.muted, lineHeight: 22, marginBottom: space.sm },
   row: {
-    minHeight: 72,
+    minHeight: 76,
     backgroundColor: colors.white,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderRadius: radius.md,
     padding: space.md,
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.md,
+    ...shadow.card,
   },
-  selected: { borderColor: colors.blue, backgroundColor: colors.blueSoft },
+  selected: { backgroundColor: colors.blueSoft },
   copy: { flex: 1, gap: 4 },
   label: { color: colors.text, fontWeight: '800', fontSize: typeScale.body },
   detail: { color: colors.muted, lineHeight: 20 },
-  mark: { color: colors.blue, fontWeight: '800' },
+  mark: { width: 18, height: 18 },
 });

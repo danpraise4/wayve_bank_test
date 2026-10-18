@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { FlatList, Pressable, RefreshControl, StyleSheet, Text, TextInput, View } from 'react-native';
+import { AppIcon } from '../components/AppIcon';
 import { TransactionRow } from '../components/TransactionRow';
 import { Banner, EmptyState, LoadingBlock } from '../components/ui';
 import { isValidDateInput, presetDateRange, watToday } from '../domain/dates';
@@ -12,7 +13,7 @@ import { applyFilterPatch, emptyFilters, mergeTransactionPages, type Transaction
 import type { TransactionStatus, TransactionType } from '../domain/types';
 import { openScreen } from '../navigation/openScreen';
 import { bankApi, queryClient, useSession } from '../state/runtime';
-import { colors, space, type as typeScale } from '../theme/tokens';
+import { colors, radius, space, type as typeScale } from '../theme/tokens';
 
 const refreshHistory = singleFlight(() => queryClient.refetchQueries({ queryKey: ['transactions', 'history'] }));
 
@@ -73,7 +74,14 @@ export function HistoryScreen() {
       contentContainerStyle={styles.content}
       data={view.mode === 'error' ? [] : items}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <TransactionRow transaction={item} onPress={() => openScreen(`/transaction/${item.id}`)} />}
+      renderItem={({ item, index }) => (
+        <TransactionRow
+          transaction={item}
+          isFirst={index === 0}
+          isLast={index === items.length - 1}
+          onPress={() => openScreen(`/transaction/${item.id}`)}
+        />
+      )}
       refreshControl={<RefreshControl refreshing={query.isRefetching && !query.isFetchingNextPage} onRefresh={() => void refreshHistory()} />}
       onEndReached={() => {
         if (query.hasNextPage && !query.isFetchingNextPage) {
@@ -85,18 +93,21 @@ export function HistoryScreen() {
       windowSize={7}
       ListHeaderComponent={
         <View style={styles.header}>
-          <TextInput
-            accessibilityLabel="Search by description or reference"
-            value={searchInput}
-            onChangeText={setSearchInput}
-            placeholder="Search description or reference"
-            placeholderTextColor={colors.muted}
-            style={styles.search}
-            autoCapitalize="none"
-            autoCorrect={false}
-            clearButtonMode="while-editing"
-            maxFontSizeMultiplier={1.6}
-          />
+          <View style={styles.searchWrap}>
+            <AppIcon name="search" size={18} color={colors.muted} />
+            <TextInput
+              accessibilityLabel="Search by description or reference"
+              value={searchInput}
+              onChangeText={setSearchInput}
+              placeholder="Search description or reference"
+              placeholderTextColor={colors.muted}
+              style={styles.search}
+              autoCapitalize="none"
+              autoCorrect={false}
+              clearButtonMode="while-editing"
+              maxFontSizeMultiplier={1.6}
+            />
+          </View>
           <ChipRow
             label="Type"
             options={[
@@ -247,13 +258,20 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   content: { paddingBottom: space.xxl, flexGrow: 1 },
   header: { padding: space.lg, gap: space.md },
-  search: {
-    minHeight: 48,
-    borderRadius: 12,
-    borderWidth: 1.5,
+  searchWrap: {
+    minHeight: 52,
+    borderRadius: radius.pill,
+    borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.white,
     paddingHorizontal: space.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+  },
+  search: {
+    flex: 1,
+    minHeight: 48,
     color: colors.text,
     fontSize: typeScale.body,
   },
@@ -261,7 +279,7 @@ const styles = StyleSheet.create({
   presets: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   chip: {
     minHeight: 40,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     paddingHorizontal: space.md,
     alignItems: 'center',
     justifyContent: 'center',
@@ -270,14 +288,14 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   chipSelected: { backgroundColor: colors.blue, borderColor: colors.blue },
-  chipText: { color: colors.text, fontWeight: '600' },
+  chipText: { color: colors.text, fontWeight: '700' },
   chipTextSelected: { color: colors.white },
   dates: { flexDirection: 'row', gap: space.md },
   dateField: { flex: 1, gap: space.xs },
-  dateLabel: { color: colors.muted, fontSize: typeScale.caption, fontWeight: '700' },
+  dateLabel: { color: colors.muted, fontSize: typeScale.caption, fontWeight: '800', letterSpacing: 0.4 },
   dateInput: {
-    minHeight: 44,
-    borderRadius: 12,
+    minHeight: 48,
+    borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.white,
