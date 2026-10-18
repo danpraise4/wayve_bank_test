@@ -34,6 +34,19 @@ export function watDayBounds(day: string): { startIso: string; endIso: string } 
   };
 }
 
+/** Shorter list label. The details screen keeps the full timestamp, including WAT. */
+export function formatListWhen(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) {
+    return 'Unknown date';
+  }
+  const shifted = new Date(date.getTime() + WAT_OFFSET_MS);
+  const month = MONTHS[shifted.getUTCMonth()] ?? 'Unknown';
+  const hours = String(shifted.getUTCHours()).padStart(2, '0');
+  const minutes = String(shifted.getUTCMinutes()).padStart(2, '0');
+  return `${shifted.getUTCDate()} ${month} ${shifted.getUTCFullYear()} · ${hours}:${minutes}`;
+}
+
 export function formatTimestamp(iso: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) {

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { formatMinor } from '../domain/money';
-import { colors, space, type as typeScale } from '../theme/tokens';
+import { colors, radius, shadow, space, type as typeScale } from '../theme/tokens';
 
 export function TransferQuote({
   amountMinor,
@@ -13,8 +13,10 @@ export function TransferQuote({
 }) {
   return (
     <View style={styles.card}>
+      <Text style={styles.heading}>Payment summary</Text>
       <QuoteRow label="Amount" value={amountMinor === null ? '—' : formatMinor(amountMinor)} />
       <QuoteRow label="Fee" value={feeMinor === null ? '—' : formatMinor(feeMinor)} />
+      <View style={styles.divider} />
       <QuoteRow label="Total debit" value={totalDebitMinor === null ? '—' : formatMinor(totalDebitMinor)} emphasis />
     </View>
   );
@@ -26,7 +28,7 @@ function QuoteRow({ label, value, emphasis = false }: { label: string; value: st
       <Text style={[styles.label, emphasis && styles.emphasis]} maxFontSizeMultiplier={1.6}>
         {label}
       </Text>
-      <Text style={[styles.value, emphasis && styles.emphasis]} maxFontSizeMultiplier={1.4}>
+      <Text style={[styles.value, emphasis && styles.emphasisValue]} maxFontSizeMultiplier={1.4}>
         {value}
       </Text>
     </View>
@@ -36,14 +38,16 @@ function QuoteRow({ label, value, emphasis = false }: { label: string; value: st
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.white,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderRadius: radius.lg,
     padding: space.lg,
     gap: space.md,
+    ...shadow.card,
   },
-  row: { flexDirection: 'row', justifyContent: 'space-between', gap: space.md, minHeight: 28 },
+  heading: { color: colors.muted, fontSize: typeScale.caption, fontWeight: '800', letterSpacing: 0.8, textTransform: 'uppercase' },
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.border },
+  row: { flexDirection: 'row', justifyContent: 'space-between', gap: space.md, minHeight: 28, alignItems: 'center' },
   label: { color: colors.muted, fontSize: typeScale.body },
-  value: { color: colors.text, fontSize: typeScale.body, fontWeight: '600' },
-  emphasis: { color: colors.blue, fontWeight: '800' },
+  value: { color: colors.text, fontSize: typeScale.body, fontWeight: '700' },
+  emphasis: { color: colors.text, fontWeight: '800' },
+  emphasisValue: { color: colors.blue, fontWeight: '800', fontSize: typeScale.section },
 });

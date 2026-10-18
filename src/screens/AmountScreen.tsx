@@ -1,15 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { openScreen } from '../navigation/openScreen';
-import { Text, StyleSheet } from 'react-native';
 import { KeyboardScreen } from '../components/KeyboardScreen';
 import { TransferQuote } from '../components/TransferQuote';
-import { Banner, Button, TextField } from '../components/ui';
+import { Banner, Button, ScreenIntro, TextField } from '../components/ui';
 import { addMinor, parseAmountInput } from '../domain/money';
 import { calculateFeeMinor, describeFeeSchedule } from '../domain/policy';
 import { validateBalanceCoverage, validateNarration, validateTransferAmount } from '../domain/validation';
 import { bankApi, useSession } from '../state/runtime';
 import { useTransferDraft } from '../state/transferDraftStore';
-import { colors, type as typeScale } from '../theme/tokens';
 
 export function quoteFor(amountInput: string, availableBalanceMinor: number | null) {
   const parsed = parseAmountInput(amountInput);
@@ -38,10 +36,7 @@ export function AmountScreen() {
 
   return (
     <KeyboardScreen>
-      <Text style={styles.step}>Step 2 of 3</Text>
-      <Text accessibilityRole="header" style={styles.title}>
-        How much?
-      </Text>
+      <ScreenIntro eyebrow="Step 2 of 3" title="How much?" />
       <TextField
         label="Amount"
         value={amountInput}
@@ -70,8 +65,3 @@ export function AmountScreen() {
     </KeyboardScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  step: { color: colors.blue, fontWeight: '700' },
-  title: { color: colors.text, fontSize: typeScale.title, fontWeight: '800' },
-});

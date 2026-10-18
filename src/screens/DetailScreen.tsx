@@ -10,7 +10,7 @@ import { formatMinor, formatSignedMinor } from '../domain/money';
 import { describeQueryState } from '../domain/queryState';
 import { statusPresentation, statusPollInterval } from '../domain/status';
 import { bankApi, useSession } from '../state/runtime';
-import { colors, space, type as typeScale } from '../theme/tokens';
+import { colors, radius, shadow, space, type as typeScale } from '../theme/tokens';
 
 export function DetailScreen({ id }: { id: string }) {
   const expired = useSession((state) => state.expired);
@@ -49,7 +49,7 @@ export function DetailScreen({ id }: { id: string }) {
     if (!query.data) {
       return;
     }
-    await Clipboard.setStringAsync(query.data.reference, { android: { isSensitive: true } });
+    await Clipboard.setStringAsync(query.data.reference);
     setNotice('Reference copied');
   }
 
@@ -78,14 +78,16 @@ export function DetailScreen({ id }: { id: string }) {
       {announcement ? <Banner tone="info" message={announcement} /> : null}
       {view.mode === 'refresh-error' ? <Banner message="We couldn't refresh this transaction. The last details are still shown." /> : null}
       {notice ? <Banner tone="info" message={notice} /> : null}
-      <Text style={styles.amount} accessibilityLabel={`Amount ${formatSignedMinor(transaction.amountMinor, transaction.type)}`} maxFontSizeMultiplier={1.3}>
-        {formatSignedMinor(transaction.amountMinor, transaction.type)}
-      </Text>
-      <Text style={styles.currency}>{transaction.currency}</Text>
-      <StatusBadge status={transaction.status} />
-      <Text style={styles.explanation} maxFontSizeMultiplier={1.8}>
-        {presentation.description}. {transaction.status === 'pending' ? 'This screen keeps checking until the status is final.' : null}
-      </Text>
+      <View style={styles.summary}>
+        <Text style={styles.amount} accessibilityLabel={`Amount ${formatSignedMinor(transaction.amountMinor, transaction.type)}`} maxFontSizeMultiplier={1.3}>
+          {formatSignedMinor(transaction.amountMinor, transaction.type)}
+        </Text>
+        <Text style={styles.currency}>{transaction.currency}</Text>
+        <StatusBadge status={transaction.status} />
+        <Text style={styles.explanation} maxFontSizeMultiplier={1.8}>
+          {presentation.description}. {transaction.status === 'pending' ? 'This screen keeps checking until the status is final.' : null}
+        </Text>
+      </View>
       <View style={styles.card}>
         <DetailRow label="Description" value={transaction.description} />
         <DetailRow label="Type" value={transaction.type === 'credit' ? 'Credit' : 'Debit'} />
@@ -121,11 +123,12 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 const styles = StyleSheet.create({
   content: { padding: space.lg, gap: space.md, paddingBottom: space.xxl },
   pad: { padding: space.lg, gap: space.md },
-  amount: { fontSize: 36, fontWeight: '800', color: colors.text },
-  currency: { color: colors.muted, fontWeight: '700' },
-  explanation: { color: colors.muted, lineHeight: 22 },
-  card: { backgroundColor: colors.white, borderRadius: 16, padding: space.lg, gap: space.md, borderWidth: 1, borderColor: colors.border },
-  row: { gap: space.xs },
-  label: { color: colors.muted, fontSize: typeScale.caption, fontWeight: '700' },
-  value: { color: colors.text, fontSize: typeScale.body, lineHeight: 22 },
+  summary: { backgroundColor: colors.white, borderRadius: radius.lg, padding: space.xl, gap: space.sm, alignItems: 'center', ...shadow.card },
+  amount: { fontSize: 36, fontWeight: '800', color: colors.text, letterSpacing: -0.8 },
+  currency: { color: colors.muted, fontWeight: '800', letterSpacing: 1.2 },
+  explanation: { color: colors.muted, lineHeight: 22, textAlign: 'center' },
+  card: { backgroundColor: colors.white, borderRadius: radius.lg, padding: space.lg, gap: space.md, ...shadow.card },
+  row: { gap: space.xs, paddingBottom: space.sm, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+  label: { color: colors.muted, fontSize: typeScale.caption, fontWeight: '800', letterSpacing: 0.4 },
+  value: { color: colors.text, fontSize: typeScale.body, lineHeight: 22, fontWeight: '600' },
 });

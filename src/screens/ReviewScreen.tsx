@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { KeyboardScreen } from '../components/KeyboardScreen';
 import { TransferQuote } from '../components/TransferQuote';
-import { Banner, Button } from '../components/ui';
+import { Banner, Button, ScreenIntro } from '../components/ui';
 import { customerMessage } from '../domain/errors';
 import { formatMinor } from '../domain/money';
 import type { TransferDraft } from '../domain/transferMachine';
@@ -11,7 +11,7 @@ import { isUnresolvedPhase } from '../domain/transferMachine';
 import { quoteFor } from './AmountScreen';
 import { refreshBankingData, transferController, useTransferIntent } from '../state/runtime';
 import { useTransferDraft } from '../state/transferDraftStore';
-import { colors, space, type as typeScale } from '../theme/tokens';
+import { colors, radius, shadow, space, type as typeScale } from '../theme/tokens';
 
 export function ReviewScreen() {
   const draft = useTransferDraft();
@@ -62,10 +62,7 @@ export function ReviewScreen() {
 
   return (
     <KeyboardScreen>
-      <Text style={styles.step}>Step 3 of 3</Text>
-      <Text accessibilityRole="header" style={styles.title}>
-        Review
-      </Text>
+      <ScreenIntro eyebrow="Step 3 of 3" title="Review" />
       <View style={styles.card}>
         <Text style={styles.label}>Recipient</Text>
         <Text style={styles.value}>{draft.accountName ?? 'Account name not confirmed'}</Text>
@@ -92,11 +89,9 @@ export function ReviewScreen() {
 }
 
 const styles = StyleSheet.create({
-  step: { color: colors.blue, fontWeight: '700' },
-  title: { color: colors.text, fontSize: typeScale.title, fontWeight: '800' },
-  card: { backgroundColor: colors.white, borderRadius: 16, padding: space.lg, gap: space.xs, borderWidth: 1, borderColor: colors.border },
-  label: { color: colors.muted, fontSize: typeScale.caption, fontWeight: '700' },
+  card: { backgroundColor: colors.white, borderRadius: radius.lg, padding: space.lg, gap: space.xs, ...shadow.card },
+  label: { color: colors.muted, fontSize: typeScale.caption, fontWeight: '800', letterSpacing: 0.4 },
   value: { color: colors.text, fontSize: typeScale.section, fontWeight: '800' },
-  meta: { color: colors.muted, fontSize: typeScale.label },
-  note: { color: colors.muted, lineHeight: 20 },
+  meta: { color: colors.muted, fontSize: typeScale.label, lineHeight: 20 },
+  note: { color: colors.muted, lineHeight: 22 },
 });

@@ -4,7 +4,7 @@ A React Native banking module for the Wayve Microfinance Bank mobile engineering
 
 ## Stack
 
-- Expo SDK 58, React Native, TypeScript with `strict` enabled
+- Expo SDK 57, React Native, TypeScript with `strict` enabled
 - Expo Router, which is built on React Navigation
 - TanStack Query for server state, caching, cancellation, and pagination
 - Zustand for the transfer draft, the mock session, and the balance-privacy preference

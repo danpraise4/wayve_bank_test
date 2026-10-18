@@ -11,7 +11,7 @@ import { isUnresolvedPhase } from '../domain/transferMachine';
 import type { TransactionStatus } from '../domain/types';
 import { refreshBankingData, transferController, useTransferIntent } from '../state/runtime';
 import { useTransferDraft } from '../state/transferDraftStore';
-import { colors, space, type as typeScale } from '../theme/tokens';
+import { colors, radius, shadow, space, type as typeScale } from '../theme/tokens';
 
 export function ResultScreen() {
   const intent = useTransferIntent((state) => state.intent);
@@ -81,6 +81,7 @@ export function ResultScreen() {
 
   return (
     <KeyboardScreen>
+      <Text style={styles.kicker}>{intent.phase === 'unknown' ? 'In progress' : 'Receipt'}</Text>
       <Text accessibilityRole="header" style={styles.title}>
         {intent.phase === 'unknown' ? 'Verifying transfer' : 'Transfer receipt'}
       </Text>
@@ -101,7 +102,7 @@ export function ResultScreen() {
           label="Copy reference"
           variant="secondary"
           onPress={() => {
-            void Clipboard.setStringAsync(intent.reference ?? '', { android: { isSensitive: true } });
+            void Clipboard.setStringAsync(intent.reference ?? '');
             setNotice('Reference copied');
           }}
         />
@@ -149,10 +150,11 @@ function Row({ label, value }: { label: string; value: string }) {
 }
 
 const styles = StyleSheet.create({
-  title: { color: colors.text, fontSize: typeScale.title, fontWeight: '800' },
+  kicker: { color: colors.blue, fontSize: typeScale.caption, fontWeight: '800', letterSpacing: 1.1, textTransform: 'uppercase' },
+  title: { color: colors.text, fontSize: typeScale.title, fontWeight: '800', letterSpacing: -0.4 },
   unknown: { color: colors.pending, fontWeight: '800' },
-  card: { backgroundColor: colors.white, borderRadius: 16, padding: space.lg, gap: space.md, borderWidth: 1, borderColor: colors.border },
+  card: { backgroundColor: colors.white, borderRadius: radius.lg, padding: space.lg, gap: space.md, ...shadow.card },
   row: { gap: 2 },
-  label: { color: colors.muted, fontSize: typeScale.caption, fontWeight: '700' },
-  value: { color: colors.text, fontSize: typeScale.body, fontWeight: '600' },
+  label: { color: colors.muted, fontSize: typeScale.caption, fontWeight: '800', letterSpacing: 0.3 },
+  value: { color: colors.text, fontSize: typeScale.body, fontWeight: '700' },
 });
