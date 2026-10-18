@@ -1,0 +1,13 @@
+{
+  "name": "wayve-mock-server",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.5",
+    "typescript": "~6.0.3"
+  }
+}
